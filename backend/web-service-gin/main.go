@@ -6,8 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//estructura hotel
-
+// estructura hotel
 type hotel struct {
 	ID          string  `json:"id"`
 	Name        string  `json: name`
@@ -15,8 +14,7 @@ type hotel struct {
 	Price       float64 `json: price`
 }
 
-//estructura reservas
-
+// estructura reservas
 type reservation struct {
 	ID          string `json:"id"`
 	IsConfirmed bool   `json:"isConfirmed"`
