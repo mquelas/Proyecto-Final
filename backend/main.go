@@ -4,15 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-)
 
-// estructura hotel
-type hotel struct {
-	ID          string  `json:"id"`
-	Name        string  `json: name`
-	Description string  `json: description`
-	Price       float64 `json: price`
-}
+	. "backend/model"
+	. "backend/service"
+)
 
 // estructura reservas
 type reservation struct {
@@ -28,14 +23,6 @@ type reservation struct {
 func confirmReservation(reservation *reservation) {
 
 	reservation.IsConfirmed = true
-}
-
-//crea los hoteles
-
-var hotels = []hotel{
-	{ID: "1", Name: "nombre 1", Description: "descr.", Price: 120.50},
-	{ID: "2", Name: "Hotel Baraton", Description: "Un hotel sucio pero barato.", Price: 21.30},
-	{ID: "3", Name: "La Posada de Roberto", Description: "Descanso campestre", Price: 89.50},
 }
 
 //crea resevas
@@ -72,29 +59,29 @@ func main() {
 }
 
 func getHotels(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, hotels)
+	context.IndentedJSON(http.StatusOK, GetHotels())
 }
 
 func postHotels(context *gin.Context) {
-	var newHotel hotel
+	var newHotel Hotel
 	if err := context.BindJSON(&newHotel); err != nil {
 		return
 	}
 
-	hotels = append(hotels, newHotel)
+	//hotels = append(hotels, newHotel)
 	context.IndentedJSON(http.StatusCreated, newHotel)
 }
 
 func getHotelById(context *gin.Context) {
-	id := context.Param("id")
-
-	for _, hotel := range hotels {
-		if hotel.ID == id {
-			context.IndentedJSON(http.StatusOK, hotel)
-			return
+	//id := context.Param("id")
+	/*
+		for _, hotel := range hotels {
+			if hotel.ID == id {
+				context.IndentedJSON(http.StatusOK, hotel)
+				return
+			}
 		}
-	}
-	context.IndentedJSON(http.StatusNotFound, gin.H{"message": "hotel no encontrado"})
+	*/context.IndentedJSON(http.StatusNotFound, gin.H{"message": "hotel no encontrado"})
 }
 
 func getReservations(context *gin.Context) {
