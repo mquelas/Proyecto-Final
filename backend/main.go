@@ -55,7 +55,6 @@ func main() {
 	router.POST("/reservations", postReservations)
 
 	router.Run("localhost:8080")
-
 }
 
 func getHotels(context *gin.Context) {
