@@ -15,6 +15,7 @@ func GetHotels() []Hotel {
 		//return nil, fmt.Errorf("getHotels %q: %v", err)
 		return nil
 	}
+	defer db.Close()
 
 	var hotels []Hotel
 
@@ -40,6 +41,7 @@ func GetHotels() []Hotel {
 		return nil
 		//, fmt.Errorf("getHotels %q: %v", err)
 	}
+
 	return hotels
 }
 
