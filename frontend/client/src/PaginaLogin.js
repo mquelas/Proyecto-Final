@@ -1,9 +1,6 @@
 import Navbar from "./components/Navbar";
-import HeroAbout from "./components/HeroAbout";
-import aboutphoto from "./assets/aboutphoto.jpg";
 
-
-export default function About(){
+export default function PaginaLogin(){
 
     const navbarLinks = [
 
@@ -13,11 +10,9 @@ export default function About(){
         { url: "/login", title: "Login" },
       ];
 
-    return <div className="About">
+    return <div className="PaginaLogin">
         
         <Navbar navbarLinks={navbarLinks} />
-        <HeroAbout imageSrc={aboutphoto} />
-        
         
         
         </div>

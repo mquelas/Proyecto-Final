@@ -9,6 +9,7 @@ export default function PaginaReserva(){
         { url: "/", title: "Home" },
         { url: "/about", title: "Sobre nosotros" },
         { url: "/reservas", title: "Reservar" },
+        { url: "/login", title: "Login" },
       ];
 
     return <div className="PaginaReserva">

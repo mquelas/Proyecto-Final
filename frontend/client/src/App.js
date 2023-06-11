@@ -11,6 +11,8 @@ import {
 }from "react-router-dom";
 import About from "./About";
 import PaginaReseva from "./PaginaReserva";
+import PaginaLogin from "./PaginaLogin";
+
 
 function App() {
 
@@ -20,6 +22,7 @@ function App() {
     { url: "/", title: "Home" },
     { url: "/about", title: "Sobre nosotros" },
     { url: "/reservas", title: "Reservar" },
+    { url: "/login", title: "Login" },
   ];
 
   return (
