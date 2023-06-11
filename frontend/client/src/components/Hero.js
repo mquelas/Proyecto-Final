@@ -5,7 +5,7 @@ const Hero = ({ imageSrc }) => {
   return (
     <div className="hero">
       <img src={imageSrc} alt=" MyStay" className="hero__image" />
-      <h1 className="hero__title">Travel made simple.</h1>
+      <h1 className="hero__title">Viajar es sencillo</h1>
     </div>
   );
 };
