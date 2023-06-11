@@ -90,11 +90,14 @@ func getReservationById(context *gin.Context) {
 func postReservations(context *gin.Context) {
 
 	var newReservation Reservation
-	if err := context.BindJSON(&newReservation); err != nil {
+	var err error
+
+	if err = context.BindJSON(&newReservation); err != nil {
 		return
 	}
 
-	//reservations = append(reservations, newReservation)
+	newReservation, err = CreateReservation(newReservation)
+
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
