@@ -23,7 +23,7 @@ function App() {
     { url: "/about", title: "Sobre nosotros" },
     { url: "/reservas", title: "Reservar" },
     { url: "/login", title: "Login" },
-    
+
   ];
 
   return (
@@ -33,7 +33,7 @@ function App() {
       <Hero imageSrc={travel_01} />
       <Slider
         imageSrc={travel_02}
-        title={"Be an explorer."}
+        title={"Be an explorer"}
         subtitle={
           "Our platform offers a wide variety of unique travel locations!"
         }
