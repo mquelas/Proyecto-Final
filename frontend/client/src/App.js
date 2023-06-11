@@ -18,7 +18,7 @@ function App() {
   const navbarLinks = [
 
     { url: "/", title: "Home" },
-    { url: "/about", title: "About" },
+    { url: "/about", title: "Sobre nosotros" },
     { url: "/reservas", title: "Reservar" },
   ];
 
