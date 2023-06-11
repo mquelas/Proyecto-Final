@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import About from './About';
+import PaginaReserva from './PaginaReserva';
+
+
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+            <Routes>
+                <Route index element={<App />} />
+                <Route path="/about" element={<About/> } />
+                <Route path="/reservas" element={<PaginaReserva/> } />
+                <Route path="/*" element={<h1>err 404: This route doesn't exists</h1>} />
+            </Routes>
+        </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

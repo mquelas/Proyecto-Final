@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Navbar.css";
 import { FiMenu, FiX } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ navbarLinks }) => {
   // Determines if the "menu icon" was clicked or not. Note that this icon is only visible when the window width is small.
@@ -30,9 +31,9 @@ const Navbar = ({ navbarLinks }) => {
         {navbarLinks.map((item, index) => {
           return (
             <li className="navbar__item" key={index}>
-              <a className="navbar__link" href={item.url}>
+              <Link className="navbar__link" to={item.url}>
                 {item.title}
-              </a>
+              </Link>
             </li>
           );
         })}
