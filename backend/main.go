@@ -7,6 +7,8 @@ import (
 	. "backend/service"
 	"net/http"
 
+	//. "backend/data_access"
+	//"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,12 +21,12 @@ func main() {
 	router.GET("/reservations", getReservations)
 	router.GET("/reservations/:id", getReservationById)
 	router.POST("/reservations", postReservations)
-
 	router.Run("localhost:8080")
 }
 
 // insertar neuvos hoteles
 func postHotels(context *gin.Context) {
+
 	var newHotel Hotel
 	if err := context.BindJSON(&newHotel); err != nil {
 		return
@@ -35,70 +37,149 @@ func postHotels(context *gin.Context) {
 }
 
 func getHotels(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, GetHotels())
+	var hotels []Hotel
+	var err error
+
+	hotels, err = GetHotels()
+	if err != nil {
+		context.IndentedJSON(http.StatusNotFound, err.Error())
+		return
+	}
+	context.IndentedJSON(http.StatusOK, hotels)
 }
 
 func getHotelById(context *gin.Context) {
-	//id := context.Param("id")
-	/*
-		for _, hotel := range hotels {
-			if hotel.ID == id {
-				context.IndentedJSON(http.StatusOK, hotel)
-				return
-			}
-		}
-	*/context.IndentedJSON(http.StatusNotFound, gin.H{"message": "hotel no encontrado"})
+
+	var hotels Hotel
+	var err error
+	id := context.Param("id")
+
+	hotels, err = GetHotelById(id)
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, hotels)
 }
 
 func getReservations(context *gin.Context) {
 
-	context.IndentedJSON(http.StatusOK, reservations)
+	reservations, err := GetReservations()
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, reservations)
 }
 
 func getReservationById(context *gin.Context) {
+
+	var reservation Reservation
+	var err error
 	id := context.Param("id")
 
-	for _, reservation := range reservations {
-		if reservation.ID == id {
-			context.IndentedJSON(http.StatusOK, reservation)
-			return
-		}
+	reservation, err = GetReservationById(id)
+	if err != nil {
+
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
 	}
-	context.IndentedJSON(http.StatusNotFound, gin.H{"message": "reserva no encontrada"})
+
+	context.JSON(http.StatusOK, reservation)
 }
 
 func postReservations(context *gin.Context) {
-	var newReservation reservation
+
+	var newReservation Reservation
 	if err := context.BindJSON(&newReservation); err != nil {
 		return
 	}
 
-	reservations = append(reservations, newReservation)
+	//reservations = append(reservations, newReservation)
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
 //confirma la reserva
 
-func confirmReservation(reservation *reservation) {
+func confirmReservation(reservation *Reservation) {
 
 	reservation.IsConfirmed = true
 }
 
-//crea resevas
+/*var users []User
 
-//var reservations = []reservation{
+func main() {
+    r := gin.Default()
 
-//	{ID: "1", IsConfirmed: false, IdHotel: "1", From: "2023-05-23", To: "2023-06-03"},
-//	{ID: "2", IsConfirmed: false, IdHotel: "2", From: "2024-05-23", To: "2025-06-03"},
-//	{ID: "3", IsConfirmed: false, IdHotel: "3", From: "2020-05-23", To: "2020-06-03"},
-//}
+    // Initialize session middleware
+    store := cookie.NewStore([]byte("secret"))
+    r.Use(sessions.Sessions("mysession", store))
 
-/*
-	GET --- listar hoteles
-	agregar un hotel
-	ver detalles de un hotel
+    // Create user endpoint
+    r.POST("/users", func(c *gin.Context) {
+        var user User
+        if err := c.BindJSON(&user); err != nil {
+            c.AbortWithStatus(http.StatusBadRequest)
+            return
+        }
 
-	GET --- listar reservas
-	confirmar una reserva ----------- FALTA VALIDACION
+        // Check if user already exists
+        for _, u := range users {
+            if u.Username == user.Username {
+                c.AbortWithStatus(http.StatusConflict)
+                return
+            }
+        }
 
-*/
+        users = append(users, user)
+        c.Status(http.StatusCreated)
+    })
+
+    // Login endpoint
+    r.POST("/login", func(c *gin.Context) {
+        var user User
+        if err := c.BindJSON(&user); err != nil {
+            c.AbortWithStatus(http.StatusBadRequest)
+            return
+        }
+
+        // Find user in list of registered users
+        for _, u := range users {
+            if u.Username == user.Username && u.Password == user.Password {
+
+                // Set the user as authenticated in the session
+                session := sessions.Default(c)
+                session.Set("authenticated", true)
+                session.Save()
+
+                c.Status(http.StatusOK)
+                return
+            }
+        }
+
+        c.AbortWithStatus(http.StatusUnauthorized)
+    })
+
+    // Protected endpoint - requires authentication
+    r.GET("/protected", AuthMiddleware(), func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"message": "You are authenticated!"})
+    })
+
+    r.Run(":8080")
+}
+
+// Middleware to require authentication
+func AuthMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        session := sessions.Default(c)
+        if auth, ok := session.Get("authenticated").(bool); !ok || !auth {
+            c.AbortWithStatus(http.StatusUnauthorized)
+            return
+        }
+
+        // Continue processing request
+        c.Next()
+    }
+}*/
