@@ -23,6 +23,7 @@ function App() {
     { url: "/about", title: "Sobre nosotros" },
     { url: "/reservas", title: "Reservar" },
     { url: "/login", title: "Login" },
+    
   ];
 
   return (
