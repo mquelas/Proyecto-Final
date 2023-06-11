@@ -1,84 +1,47 @@
 package service
 
-/*. "backend/data_access"
-. "backend/model"
-"database/sql"
-"fmt" */
+import (
+	. "backend/data_access"
+	. "backend/model"
+	"context"
+	"database/sql"
+	"fmt"
+	"log"
+)
 
-//var users []User
+func CreateUser(user User) (User, error) {
 
-/*
-func main() {
-    r := gin.Default()
+	var err error
+	var db *sql.DB
+	//var reservation Reservation
 
-    // Initialize session middleware
-    store := cookie.NewStore([]byte("secret"))
-    r.Use(sessions.Sessions("mysession", store))
+	db, err = DataConnect()
 
-    // Create user endpoint
-    r.POST("/users", func(c *gin.Context) {
-        var user User
-        if err := c.BindJSON(&user); err != nil {
-            c.AbortWithStatus(http.StatusBadRequest)
-            return
-        }
+	if err != nil {
 
-        // Check if user already exists
-        for _, u := range users {
-            if u.Username == user.Username {
-                c.AbortWithStatus(http.StatusConflict)
-                return
-            }
-        }
+		return user, fmt.Errorf("createUser %q", err)
+	}
 
-        users = append(users, user)
-        c.Status(http.StatusCreated)
-    })
+	defer db.Close()
 
-    // Login endpoint
-    r.POST("/login", func(c *gin.Context) {
-        var user User
-        if err := c.BindJSON(&user); err != nil {
-            c.AbortWithStatus(http.StatusBadRequest)
-            return
-        }
+	insertResult, err := db.ExecContext(
+		context.Background(),
+		"INSERT INTO user (email, name, lastname, password, admin) VALUES (?, ?, ?, ?, ?)",
+		user.EMail, user.Name, user.LastName, user.Password, user.Admin,
+	)
 
-        // Find user in list of registered users
-        for _, u := range users {
-            if u.Username == user.Username && u.Password == user.Password {
+	if err != nil {
+		log.Fatalf("impossible insert user: %s", err)
+	}
+	id, err := insertResult.LastInsertId()
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id: %s", err)
+	}
+	log.Printf("inserted id: %d", id)
 
-                // Set the user as authenticated in the session
-                session := sessions.Default(c)
-                session.Set("authenticated", true)
-                session.Save()
+	if err != nil {
+		return user, fmt.Errorf("createUser %q", err)
+	}
 
-                c.Status(http.StatusOK)
-                return
-            }
-        }
-
-        c.AbortWithStatus(http.StatusUnauthorized)
-    })
-
-    // Protected endpoint - requires authentication
-    r.GET("/protected", AuthMiddleware(), func(c *gin.Context) {
-        c.JSON(http.StatusOK, gin.H{"message": "You are authenticated!"})
-    })
-
-    r.Run(":8080")
+	return user, nil
 }
-
-// Middleware to require authentication
-func AuthMiddleware() gin.HandlerFunc {
-    return func(c *gin.Context) {
-        session := sessions.Default(c)
-        if auth, ok := session.Get("authenticated").(bool); !ok || !auth {
-            c.AbortWithStatus(http.StatusUnauthorized)
-            return
-        }
-
-        // Continue processing request
-        c.Next()
-    }
-}
-*/
