@@ -8,12 +8,14 @@ export function FormularioLogin ({setUser}){
 
     const [nombre, setNombre] = useState("")
     const [contrasena, setContrasena] = useState("")
+    const [email, setEmail] = useState("")
+
     const [error, setError] = useState(false)
 
     const handleSubmit = (e) =>{
 
         e.preventDefault()
-        if (nombre == "" || contrasena == ""){
+        if (nombre == "" || contrasena == "" || email == ""){
             setError(true)
             return
         }
@@ -28,7 +30,7 @@ export function FormularioLogin ({setUser}){
 
         <section>
 
-            <h1 className="Log">Login</h1>
+            <h1 className="Log">Ingrese sus datos:</h1>
 
             <form 
                 className="formulario"
@@ -36,11 +38,18 @@ export function FormularioLogin ({setUser}){
             
             >
 
-                <input  
-                placeholder="Usuario"
+<input  
+                placeholder="Nombre"
                 type="text"
                 value={nombre}
                 onChange={e => setNombre(e.target.value)}
+                ></input>
+
+                <input  
+                placeholder="Email"
+                type="text"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 ></input>
 
                 <input 
@@ -50,15 +59,8 @@ export function FormularioLogin ({setUser}){
                 onChange={e => setContrasena(e.target.value)}
                 ></input>
 
-                <button>Iniciar Sesión</button>
+                <button>Registrarse</button>
 
-                <button className="botonRegistro">No tiene cuenta? Registrese!
-                <li>
-                    <Link className="navbar__link" to={"/register"}>
-                        
-                     </Link>
-                 </li>
-            </button>
 
                 
             </form>

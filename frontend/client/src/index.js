@@ -7,6 +7,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import About from './About';
 import PaginaReserva from './PaginaReserva';
 import PaginaLogin from './PaginaLogin';
+import PaginaRegistro from './PaginaRegistro';
+
 
 
 
@@ -17,6 +19,7 @@ ReactDOM.render(
             <Routes>
                 <Route index element={<App />} />
                 <Route path="/login" element={<PaginaLogin/> } />
+                <Route path="/register" element={<PaginaRegistro/> } />
                 <Route path="/about" element={<About/> } />
                 <Route path="/reservas" element={<PaginaReserva/> } />
                 <Route path="/*" element={<h1>err 404: This route doesn't exists</h1>} />

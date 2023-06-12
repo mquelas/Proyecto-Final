@@ -1,6 +1,6 @@
 .formulario {
     position: absolute;
-    bottom: 59%;
+    bottom: 55%;
     right: 46%;
     display: flex;
     justify-content: center;
@@ -21,7 +21,7 @@
 
   .camposOb {
     position: absolute;
-    bottom: 56%;
+    bottom: 80%;
     right: 50%;
     transform: translate(50%, 50%);
     color: white;
