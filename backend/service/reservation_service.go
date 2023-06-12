@@ -17,7 +17,6 @@ func GetReservations() ([]Reservation, error) {
 	db, err = DataConnect()
 
 	if err != nil {
-
 		return nil, fmt.Errorf("getReservations %q", err)
 	}
 
@@ -28,18 +27,15 @@ func GetReservations() ([]Reservation, error) {
 	rows, err := db.Query(`SELECT * FROM reservation`)
 
 	if err != nil {
-
 		return nil, fmt.Errorf("getReservations %q", err)
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
-
 		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
-
 			return nil, fmt.Errorf("getReservations %q", err)
 		}
 
@@ -47,7 +43,6 @@ func GetReservations() ([]Reservation, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-
 		return nil, fmt.Errorf("getReservations %q", err)
 	}
 
@@ -55,7 +50,6 @@ func GetReservations() ([]Reservation, error) {
 }
 
 func GetReservationById(id int64) (Reservation, error) {
-
 	var reservation Reservation
 	var err error
 	var db *sql.DB
@@ -63,7 +57,6 @@ func GetReservationById(id int64) (Reservation, error) {
 	db, err = DataConnect()
 
 	if err != nil {
-
 		return reservation, fmt.Errorf("getReservationById %q", err)
 	}
 
@@ -72,18 +65,15 @@ func GetReservationById(id int64) (Reservation, error) {
 	rows, err := db.Query("SELECT * FROM reservation WHERE Id_reservation = ?", id)
 
 	if err != nil {
-
 		return reservation, fmt.Errorf("getReservationById %q", err)
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
-
 		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
-
 			return reservation, fmt.Errorf("getReservationById %q", err)
 		}
 
@@ -91,7 +81,6 @@ func GetReservationById(id int64) (Reservation, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-
 		return reservation, fmt.Errorf("getReservationById %q", err)
 	}
 
@@ -99,11 +88,14 @@ func GetReservationById(id int64) (Reservation, error) {
 }
 
 func CreateReservation(reservation Reservation) (*Reservation, error) {
+	if !validateAvailability(reservation) {
+		return nil, fmt.Errorf("No hay disponibilidad")
+	}
+
 	var err error
 	var db *sql.DB
 
 	db, err = DataConnect()
-
 	if err != nil {
 		return nil, fmt.Errorf("createReservation %q", err)
 	}
@@ -115,13 +107,11 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 		"INSERT INTO reservation (checkin, checkout, id_hotel, Email) VALUES (?, ?, ?, ?)",
 		reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.EMail,
 	)
-
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo insertar la reservacion %q", err)
 	}
 
 	id, err := insertResult.LastInsertId()
-
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo obtener el ID insertado %q", err)
 	}
@@ -143,6 +133,25 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 	}
 
 	return newReservation, nil
+}
+
+func validateAvailability(reservation Reservation) bool {
+	hotel, err := GetHotelById(reservation.IdHotel)
+	if err != nil {
+		return false
+	}
+
+	var qtyRooms = hotel.Rooms
+	reservedRooms, err := GetOccupancyByDate(reservation.IdHotel, reservation.CheckIn, reservation.CheckOut)
+	if err != nil || reservedRooms < 0 {
+		return false
+	}
+
+	if qtyRooms > reservedRooms {
+		return true
+	}
+
+	return false
 }
 
 func insertOccupancy(db *sql.DB, reservationID int64, date time.Time) error {
@@ -191,7 +200,6 @@ func GetReservationByHotelId(id int64) ([]Reservation, error) {
 		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
-
 			return nil, fmt.Errorf("getReservationById %q", err)
 		}
 
@@ -214,7 +222,6 @@ func GetReservationByEmail(email string) ([]Reservation, error) {
 	db, err = DataConnect()
 
 	if err != nil {
-
 		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
@@ -228,18 +235,15 @@ func GetReservationByEmail(email string) ([]Reservation, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-
 		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
-
 			return nil, fmt.Errorf("getReservationById %q", err)
 		}
 		reservations = append(reservations, reser)
 	}
 
 	if err := rows.Err(); err != nil {
-
 		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
