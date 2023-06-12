@@ -48,7 +48,7 @@ func GetHotels() ([]Hotel, error) {
 	return hotels, nil
 }
 
-func GetHotelById(id string) (Hotel, error) {
+func GetHotelById(id int64) (Hotel, error) {
 
 	var hotel Hotel
 	var err error
@@ -85,6 +85,7 @@ func GetHotelById(id string) (Hotel, error) {
 
 	return hotel, nil
 }
+
 func CreateHotel(hotel Hotel) (Hotel, error) {
 
 	var err error

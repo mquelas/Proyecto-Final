@@ -1,14 +1,11 @@
 package main
 
 import (
-	//"net/http"
-
 	. "backend/model"
 	. "backend/service"
 	"net/http"
+	"strconv"
 
-	//. "backend/data_access"
-	//"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,8 +64,11 @@ func getHotels(context *gin.Context) {
 }
 
 func getHotelById(context *gin.Context) {
-
-	id := context.Param("id")
+	id, err2 := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err2 != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err2.Error()})
+		return
+	}
 
 	var hotel, err = GetHotelById(id)
 	if err != nil {
@@ -91,10 +91,14 @@ func getReservations(context *gin.Context) {
 }
 
 func getReservationById(context *gin.Context) {
+	id, err2 := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err2 != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err2.Error()})
+		return
+	}
 
 	var reservation Reservation
 	var err error
-	id := context.Param("id")
 
 	reservation, err = GetReservationById(id)
 	if err != nil {
@@ -107,31 +111,24 @@ func getReservationById(context *gin.Context) {
 }
 
 func postReservations(context *gin.Context) {
-
 	var newReservation Reservation
 
 	if err := context.BindJSON(&newReservation); err != nil {
-
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
 
-	context.IndentedJSON(http.StatusCreated, newReservation)
-
-	// Insertar la reserva en la tabla "Occupancy"
-
-	err := InsertReservationIntoOccupancy(int(newReservation.ID), int(newReservation.IdHotel), newReservation.CheckIn, newReservation.CheckOut)
+	createdReservation, err := CreateReservation(newReservation)
 
 	if err != nil {
-
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Devolver la nueva reserva en la respuesta
 
-	context.IndentedJSON(http.StatusCreated, newReservation)
+	context.IndentedJSON(http.StatusCreated, createdReservation)
 }
 
 func postUser(context *gin.Context) {
@@ -201,19 +198,20 @@ func loginHandler(context *gin.Context) {
 }
 
 func getReservationByHotelId(context *gin.Context) {
+	id, err2 := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err2 != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err2.Error()})
+		return
+	}
 
-	var reservation Reservation
-	var err error
-	id := context.Param("id")
-
-	reservation, err = GetReservationById(id)
+	var reservations, err = GetReservationByHotelId(id)
 	if err != nil {
 
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusOK, reservation)
+	context.JSON(http.StatusOK, reservations)
 }
 
 func getReservationByEmail(context *gin.Context) {
