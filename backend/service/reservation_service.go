@@ -26,7 +26,7 @@ func GetReservations() ([]Reservation, error) {
 
 	var reservations []Reservation
 
-	rows, err := db.Query(`SELECT * FROM reservations`)
+	rows, err := db.Query(`SELECT * FROM reservation`)
 
 	if err != nil {
 
@@ -39,7 +39,7 @@ func GetReservations() ([]Reservation, error) {
 
 		var reser Reservation
 
-		if err := rows.Scan(&reser.ID, &reser.IdHotel, &reser.CheckIn, &reser.CheckOut, &reser.IsConfirmed); err != nil {
+		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
 
 			return nil, fmt.Errorf("getReservations %q", err)
 		}
@@ -83,7 +83,7 @@ func GetReservationById(id string) (Reservation, error) {
 
 		var reser Reservation
 
-		if err := rows.Scan(&reser.ID, &reser.IdHotel, &reser.CheckIn, &reser.CheckOut, &reser.IsConfirmed); err != nil {
+		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
 
 			return reservation, fmt.Errorf("getReservationById %q", err)
 		}
@@ -117,8 +117,8 @@ func CreateReservation(reservation Reservation) (Reservation, error) {
 	insertResult, err := db.ExecContext(
 
 		context.Background(),
-		"INSERT INTO reservation (id_reservation, checkin, checkout, id_hotel, IsConfirmed) VALUES (?, ?, ?, ?, ?)",
-		reservation.ID, reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.IsConfirmed,
+		"INSERT INTO reservation (id_reservation, checkin, checkout, id_hotel, Email) VALUES (?, ?, ?, ?, ?)",
+		reservation.ID, reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.EMail,
 	)
 
 	if err != nil {
@@ -171,7 +171,7 @@ func GetReservationByHotelId(id string) (Reservation, error) {
 
 		var reser Reservation
 
-		if err := rows.Scan(&reser.ID, &reser.IdHotel, &reser.CheckIn, &reser.CheckOut, &reser.IsConfirmed); err != nil {
+		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
 
 			return reservation, fmt.Errorf("getReservationById %q", err)
 		}
@@ -187,9 +187,9 @@ func GetReservationByHotelId(id string) (Reservation, error) {
 	return reservation, nil
 }
 
-func getReservationByEmail(id string) (Reservation, error) {
+func GetReservationByEmail(email string) ([]Reservation, error) {
 
-	var reservation Reservation
+	var reservations []Reservation
 	var err error
 	var db *sql.DB
 
@@ -197,16 +197,15 @@ func getReservationByEmail(id string) (Reservation, error) {
 
 	if err != nil {
 
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
 	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM reservation WHERE email = ?", id)
+	rows, err := db.Query("SELECT * FROM reservation WHERE email = ?", email)
 
 	if err != nil {
-
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 	defer rows.Close()
 
@@ -214,20 +213,21 @@ func getReservationByEmail(id string) (Reservation, error) {
 
 		var reser Reservation
 
-		if err := rows.Scan(&reser.ID, &reser.IdHotel, &reser.CheckIn, &reser.CheckOut, &reser.IsConfirmed); err != nil {
+		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
 
-			return reservation, fmt.Errorf("getReservationById %q", err)
+			return nil, fmt.Errorf("getReservationById %q", err)
 		}
-		reservation = reser
+		reservations = append(reservations, reser)
 	}
 
 	if err := rows.Err(); err != nil {
 
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
-	return reservation, nil
+	return reservations, nil
 }
+
 func InsertReservationIntoOccupancy(reservationID int, roomID int, startDate time.Time, endDate time.Time) error {
 
 	var err error

@@ -20,10 +20,13 @@ func main() {
 	router.POST("/hotels", postHotels)
 	router.GET("/reservations", getReservations)
 	router.GET("/reservations/:id", getReservationById)
+	router.GET("/reservations/email/:email", getReservationByEmail)
+	router.GET("/reservations/hotel/:id", getReservationByHotelId)
 	router.POST("/reservations", postReservations)
 	router.POST("/users", postUser)
-	router.Run("localhost:8080")
 	router.POST("/login", loginHandler)
+	router.Run("localhost:8080")
+
 }
 
 // insertar nuevos hoteles
@@ -131,14 +134,6 @@ func postReservations(context *gin.Context) {
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
-/*
-//confirma la reserva
-
-func confirmReservation(reservation *Reservation) {
-
-		reservation.IsConfirmed = true
-	}
-*/
 func postUser(context *gin.Context) {
 
 	var newUser User
@@ -222,12 +217,9 @@ func getReservationByHotelId(context *gin.Context) {
 }
 
 func getReservationByEmail(context *gin.Context) {
+	email := context.Param("email")
 
-	var reservation Reservation
-	var err error
-	id := context.Param("id")
-
-	reservation, err = GetReservationById(id)
+	var reservation, err = GetReservationByEmail(email)
 	if err != nil {
 
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
