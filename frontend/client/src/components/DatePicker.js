@@ -32,8 +32,9 @@ const DatePicker = () => {
         minDate={today}
         direction="horizontal"
         className="calendarElement"
-      />
+     />
     </div>
+    
   );
 };
 

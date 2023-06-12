@@ -1,7 +1,7 @@
 .formulario {
   position: absolute;
   bottom: 55%;
-  right: 46%;
+  right: 44%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -11,20 +11,20 @@
 
 .Log {
   position: absolute;
-  bottom: 75%;
-  right: 50%;
-  transform: translate(50%, 50%);
-  color: white;
-  font-size: 4rem;
-  padding: 15px;
-}
-
-.camposOb {
-  position: absolute;
   bottom: 80%;
   right: 50%;
   transform: translate(50%, 50%);
   color: white;
+  font-size: 4rem;
+  padding: 18px;
+}
+
+.camposOb {
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%);
+  color: white;
   font-size: 1rem;
-  padding: 15px;
+  padding: 18px;
 }

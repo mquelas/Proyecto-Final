@@ -9,10 +9,7 @@ import PaginaReserva from './PaginaReserva';
 import PaginaLogin from './PaginaLogin';
 import PaginaRegistro from './PaginaRegistro';
 import PaginaAdmin from './PaginaAdmin';
-
-
-
-
+import PaginaComandos from './PaginaComandos';
 
 
 ReactDOM.render(
@@ -25,6 +22,7 @@ ReactDOM.render(
                 <Route path="/about" element={<About/> } />
                 <Route path="/reservas" element={<PaginaReserva/> } />
                 <Route path="/admin" element={<PaginaAdmin/> } />
+                <Route path="/comandos" element={<PaginaComandos/> } />
                 <Route path="/*" element={<h1>err 404: This route doesn't exists</h1>} />
             </Routes>
         </BrowserRouter>

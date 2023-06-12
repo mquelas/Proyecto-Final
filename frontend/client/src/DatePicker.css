@@ -1,11 +1,10 @@
 .date-container{
-
-    height: 72vh;
+    height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 40px;
-
+    gap: 30px;
+    color: rgb(61, 145, 255);
 }
