@@ -79,7 +79,6 @@ func CreateReservation(reservation Reservation) (Reservation, error) {
 
 	var err error
 	var db *sql.DB
-	//var reservation Reservation
 
 	db, err = DataConnect()
 
@@ -91,15 +90,14 @@ func CreateReservation(reservation Reservation) (Reservation, error) {
 	defer db.Close()
 
 	insertResult, err := db.ExecContext(
+
 		context.Background(),
 		"INSERT INTO reservations (id_reservations, checkin, checkout, id_hotel,IsConfirmed) VALUES (?, ?, ?, ?, ?)",
 		reservation.ID, reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.IsConfirmed,
 	)
 
-	//insertResult, err := db.ExecContext(context.Background(),query, "John", "Doe")
-
 	if err != nil {
-		log.Fatalf("impossible insert teacher: %s", err)
+		log.Fatalf("impossible insert reservations: %s", err)
 	}
 	//no borrar
 	id, err := insertResult.LastInsertId()
