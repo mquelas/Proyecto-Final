@@ -10,6 +10,8 @@ import "./components/Hero";
 import "./DatePicker.css";
 import "./components/HeroAbout.css";
 import "./components/Buttom.css";
+import { useState } from "react";
+import { useNavigate } from "react-router"
 
 export default function PaginaReserva() {
   const navbarLinks = [
@@ -19,6 +21,8 @@ export default function PaginaReserva() {
     { url: "/login", title: "Login" },
   ];
 
+  const navigate = useNavigate();
+  
   return (
     <div className="PaginaReserva">
       <Navbar navbarLinks={navbarLinks} />
@@ -27,14 +31,23 @@ export default function PaginaReserva() {
         <DatePicker className="DatePicker" />
         <button>Enviar</button>
       </div>
-      <Slider imageSrc={Hotel1} title={"Hotel 1"} />
-      <button>Reservar</button>
-      <Slider imageSrc={Hotel2} title={"Hotel 2"} />
-      <button>Reservar</button>
-      <Slider imageSrc={Hotel3} title={"Hotel 3"} />
-      <button>Reservar</button>
-      <Slider imageSrc={Hotel4} title={"Hotel 4"} />
-      <button>Reservar</button>
+      
+      <div  className="date-hotel">
+        <Slider imageSrc={Hotel1} title={"Hotel 1"} />
+        <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
+      </div>
+      <div className="date-hotel">
+        <Slider imageSrc={Hotel2} title={"Hotel 2"} />
+        <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
+      </div>
+      <div className="date-hotel">
+        <Slider imageSrc={Hotel3} title={"Hotel 3"} />
+        <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
+      </div>
+      <div className="date-hotel">
+        <Slider imageSrc={Hotel4} title={"Hotel 4"} />
+        <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
+      </div>
     </div>
   );
 }

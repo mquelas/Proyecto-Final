@@ -10,6 +10,7 @@ import PaginaLogin from './PaginaLogin';
 import PaginaRegistro from './PaginaRegistro';
 import PaginaAdmin from './PaginaAdmin';
 import PaginaComandos from './PaginaComandos';
+import PaginaConfirmacion from './PaginaConfirmacion';
 
 
 ReactDOM.render(
@@ -23,6 +24,7 @@ ReactDOM.render(
                 <Route path="/reservas" element={<PaginaReserva/> } />
                 <Route path="/admin" element={<PaginaAdmin/> } />
                 <Route path="/comandos" element={<PaginaComandos/> } />
+                <Route path="/confirmacion" element={<PaginaConfirmacion/> } />
                 <Route path="/*" element={<h1>err 404: This route doesn't exists</h1>} />
             </Routes>
         </BrowserRouter>
