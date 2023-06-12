@@ -1,9 +1,10 @@
 import Navbar from "./components/Navbar";
-import HeroLogin from "./components/HeroLogin";
 import loginphoto from "./assets/loginphoto.jpg";
 import { FormularioLogin } from "./components/FormularioLogin";
 import {Home} from './components/Home';
 import { useState } from "react";
+import HeroLogin from "./components/HeroLogin";
+
 
 export default function PaginaLogin(){
 
@@ -30,12 +31,6 @@ export default function PaginaLogin(){
             :<Home user={user}/>
         }
 
-        
-        
-
-    
-        
-          
         
         </div>
 }

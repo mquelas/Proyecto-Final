@@ -1,8 +1,5 @@
 import "./FormularioLogin.css";
 import { useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
-import { Link } from "react-router-dom";
-
 
 export function FormularioLogin ({setUser}){
 
@@ -52,15 +49,10 @@ export function FormularioLogin ({setUser}){
 
                 <button>Iniciar Sesión</button>
 
-                <button className="botonRegistro">No tiene cuenta? Registrese!
-                <li>
-                    <Link className="navbar__link" to={"/register"}>
-                        
-                     </Link>
-                 </li>
-            </button>
-
+                <button>No tiene cuenta? Registrese!</button>
+               
                 
+
             </form>
             {error && <p className="camposOb">Todos los campos son obligatorios</p>}
         </section>

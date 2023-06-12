@@ -4,7 +4,7 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 
-export function FormularioLogin ({setUser}){
+export function FormularioReg ({setUser}){
 
     const [nombre, setNombre] = useState("")
     const [contrasena, setContrasena] = useState("")

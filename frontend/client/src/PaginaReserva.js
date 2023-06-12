@@ -7,6 +7,10 @@ import Hotel3 from "./assets/Hotel 3.jpg";
 import Hotel2 from "./assets/Hotel 2.jpg";
 import Hotel1 from "./assets/Hotel 1.jpg";
 import "./components/Hero";
+import "./DatePicker.css";
+import "./components/HeroAbout.css";
+
+
 
 export default function PaginaReserva() {
   const navbarLinks = [
@@ -19,7 +23,12 @@ export default function PaginaReserva() {
   return (
     <div className="PaginaReserva">
       <Navbar navbarLinks={navbarLinks} />
-      <DatePicker /> {/* Agrega el componente DatePicker aquí */}
+      <div className="date-container">
+
+        <h1>Seleccione las fechas</h1>
+       <DatePicker className="DatePicker"/> {/* Agrega el componente DatePicker aquí */}
+
+      </div>
       <Slider imageSrc={Hotel1} title={"Hotel 1"} />
       <Slider imageSrc={Hotel2} title={"Hotel 2"} />
       <Slider imageSrc={Hotel3} title={"Hotel 3"} />
