@@ -1,11 +1,14 @@
 import "./FormularioLogin.css";
 import { useState } from "react";
+import { useNavigate } from "react-router"
+
 
 export function FormularioLogin ({setUser}){
 
     const [nombre, setNombre] = useState("")
     const [contrasena, setContrasena] = useState("")
     const [error, setError] = useState(false)
+
 
     const handleSubmit = (e) =>{
 
@@ -20,6 +23,9 @@ export function FormularioLogin ({setUser}){
         setUser([nombre])
 
     }
+
+
+    const navigate = useNavigate();
 
     return(
 
@@ -49,7 +55,7 @@ export function FormularioLogin ({setUser}){
 
                 <button>Iniciar Sesión</button>
 
-                <button>No tiene cuenta? Registrese!</button>
+                <button onClick={()=>navigate("/register")}>No tiene cuenta? Registrese!</button>
                
                 
 
