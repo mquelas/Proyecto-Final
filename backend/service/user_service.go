@@ -17,7 +17,6 @@ func CreateUser(user User) (User, error) {
 
 	var err error
 	var db *sql.DB
-	//var reservation Reservation
 
 	db, err = DataConnect()
 
@@ -29,21 +28,28 @@ func CreateUser(user User) (User, error) {
 	defer db.Close()
 
 	insertResult, err := db.ExecContext(
+
 		context.Background(),
 		"INSERT INTO user (email, name, lastname, password, admin) VALUES (?, ?, ?, ?, ?)",
 		user.EMail, user.Name, user.LastName, user.Password, user.Admin,
 	)
 
 	if err != nil {
+
 		log.Fatalf("impossible insert user: %s", err)
 	}
+
 	id, err := insertResult.LastInsertId()
+
 	if err != nil {
+
 		log.Fatalf("impossible to retrieve last inserted id: %s", err)
 	}
+
 	log.Printf("inserted id: %d", id)
 
 	if err != nil {
+
 		return user, fmt.Errorf("createUser %q", err)
 	}
 
@@ -106,6 +112,7 @@ func GenerateSessionToken() (string, error) {
 
 	// Crear una estructura de reclamaciones (claims)
 	claims := jwt.MapClaims{
+
 		"exp": time.Now().Add(time.Hour * 1).Unix(), // Tiempo de expiración del token
 	}
 

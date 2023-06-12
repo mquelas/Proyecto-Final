@@ -29,16 +29,21 @@ func main() {
 // insertar nuevos hoteles
 
 func postHotels(context *gin.Context) {
+
 	var newHotel Hotel
 
 	err := context.BindJSON(&newHotel)
+
 	if err != nil {
+
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
 	createdHotel, err := CreateHotel(newHotel)
+
 	if err != nil {
+
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create hotel"})
 		return
 	}
@@ -47,8 +52,11 @@ func postHotels(context *gin.Context) {
 }
 
 func getHotels(context *gin.Context) {
+
 	var hotels, err = GetHotels()
+
 	if err != nil {
+
 		context.IndentedJSON(http.StatusNotFound, err.Error())
 		return
 	}
@@ -56,6 +64,7 @@ func getHotels(context *gin.Context) {
 }
 
 func getHotelById(context *gin.Context) {
+
 	id := context.Param("id")
 
 	var hotel, err = GetHotelById(id)
@@ -97,31 +106,53 @@ func getReservationById(context *gin.Context) {
 func postReservations(context *gin.Context) {
 
 	var newReservation Reservation
+
 	if err := context.BindJSON(&newReservation); err != nil {
+
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
-	//reservations = append(reservations, newReservation)
+	context.IndentedJSON(http.StatusCreated, newReservation)
+
+	// Insertar la reserva en la tabla "Occupancy"
+
+	err := InsertReservationIntoOccupancy(int(newReservation.ID), int(newReservation.IdHotel), newReservation.CheckIn, newReservation.CheckOut)
+
+	if err != nil {
+
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Devolver la nueva reserva en la respuesta
+
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
+/*
 //confirma la reserva
 
 func confirmReservation(reservation *Reservation) {
 
-	reservation.IsConfirmed = true
-}
-
+		reservation.IsConfirmed = true
+	}
+*/
 func postUser(context *gin.Context) {
+
 	var newUser User
 
 	if err := context.BindJSON(&newUser); err != nil {
+
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
 	createdUser, err := CreateUser(newUser)
+
 	if err != nil {
+
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
@@ -175,6 +206,22 @@ func loginHandler(context *gin.Context) {
 }
 
 func getReservationByHotelId(context *gin.Context) {
+
+	var reservation Reservation
+	var err error
+	id := context.Param("id")
+
+	reservation, err = GetReservationById(id)
+	if err != nil {
+
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, reservation)
+}
+
+func getReservationByEmail(context *gin.Context) {
 
 	var reservation Reservation
 	var err error
