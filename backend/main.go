@@ -173,3 +173,19 @@ func loginHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"message": "Inicio de sesión exitoso"})
 
 }
+
+func getReservationByHotelId(context *gin.Context) {
+
+	var reservation Reservation
+	var err error
+	id := context.Param("id")
+
+	reservation, err = GetReservationById(id)
+	if err != nil {
+
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, reservation)
+}
