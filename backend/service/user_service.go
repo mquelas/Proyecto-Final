@@ -51,7 +51,6 @@ func CreateUser(user User) (User, error) {
 }
 
 func Authenticate(email string, password string) (User, error) {
-
 	var user User
 	var err error
 	var db *sql.DB
