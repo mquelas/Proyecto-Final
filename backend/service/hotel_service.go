@@ -3,8 +3,10 @@ package service
 import (
 	. "backend/data_access"
 	. "backend/model"
+	"context"
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 func GetHotels() ([]Hotel, error) {
@@ -73,6 +75,40 @@ func GetHotelById(id string) (Hotel, error) {
 	if err := rows.Err(); err != nil {
 		return hotel, fmt.Errorf("getHotelById %q", err)
 	}
+
+	return hotel, nil
+}
+func CreateHotel(hotel Hotel) (Hotel, error) {
+
+	var err error
+	var db *sql.DB
+
+	db, err = DataConnect()
+
+	if err != nil {
+		return hotel, fmt.Errorf("createHotel: %s", err)
+	}
+	defer db.Close()
+
+	insertResult, err := db.ExecContext(
+
+		context.Background(),
+
+		"INSERT INTO hotels (id, name, description, price, rooms) VALUES (?, ?, ?, ?, ?)",
+		hotel.ID, hotel.Name, hotel.Description, hotel.Price, hotel.Rooms)
+
+	if err != nil {
+
+		return hotel, fmt.Errorf("impossible insert hotel: %s", err)
+	}
+	id, err := insertResult.LastInsertId()
+
+	if err != nil {
+
+		return hotel, fmt.Errorf("impossible to retrieve last inserted id: %s", err)
+	}
+
+	log.Printf("inserted id: %d", id)
 
 	return hotel, nil
 }
