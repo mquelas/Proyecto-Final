@@ -135,7 +135,7 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 		err := insertOccupancy(
 			db,
 			id,
-			reservation.CheckIn.AddDate(0, 0, i+1))
+			reservation.CheckIn.AddDate(0, 0, i))
 
 		if err != nil {
 			return nil, fmt.Errorf("createReservation %q", err)
@@ -147,14 +147,6 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 
 func insertOccupancy(db *sql.DB, reservationID int64, date time.Time) error {
 	var err error
-	//	var db *sql.DB
-
-	//	db, err = DataConnect()
-
-	//	if err != nil {
-	//		return fmt.Errorf("insertOccupancy: %q", err)
-	//	}
-	//	defer db.Close()
 
 	insertResult, err := db.ExecContext(
 		context.Background(),
