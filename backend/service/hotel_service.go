@@ -101,7 +101,7 @@ func CreateHotel(hotel Hotel) (Hotel, error) {
 
 		context.Background(),
 
-		"INSERT INTO hotels (name, description, price, rooms) VALUES (?, ?, ?, ?)",
+		"INSERT INTO hotel (name, description, price, rooms) VALUES (?, ?, ?, ?)",
 		hotel.Name, hotel.Description, hotel.Price, hotel.Rooms)
 
 	if err != nil {

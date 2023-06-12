@@ -44,7 +44,7 @@ func postHotels(context *gin.Context) {
 
 	if err != nil {
 
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create hotel"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
