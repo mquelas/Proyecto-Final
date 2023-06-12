@@ -20,27 +20,33 @@ func main() {
 	router.POST("/hotels", postHotels)
 	router.GET("/reservations", getReservations)
 	router.GET("/reservations/:id", getReservationById)
+	router.GET("/reservations/email/:email", getReservationByEmail)
+	router.GET("/reservations/hotel/:id", getReservationByHotelId)
 	router.POST("/reservations", postReservations)
+	router.POST("/users", postUser)
+	router.POST("/login", loginHandler)
 	router.Run("localhost:8080")
 
-	//-----------------LOGIN------------------------
-	/*
-		router.POST("/login", loginHandler)
-	*/
 }
 
-// ---------------------------------------ver si funciona bien------------------------------------------------------
+// insertar nuevos hoteles
+
 func postHotels(context *gin.Context) {
+
 	var newHotel Hotel
 
 	err := context.BindJSON(&newHotel)
+
 	if err != nil {
+
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
-	createdHotel, err := CreateHotel(&newHotel)
+	createdHotel, err := CreateHotel(newHotel)
+
 	if err != nil {
+
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create hotel"})
 		return
 	}
@@ -48,10 +54,12 @@ func postHotels(context *gin.Context) {
 	context.JSON(http.StatusCreated, createdHotel)
 }
 
-// ---------------------------------------------------------------------------------------------
 func getHotels(context *gin.Context) {
+
 	var hotels, err = GetHotels()
+
 	if err != nil {
+
 		context.IndentedJSON(http.StatusNotFound, err.Error())
 		return
 	}
@@ -59,6 +67,7 @@ func getHotels(context *gin.Context) {
 }
 
 func getHotelById(context *gin.Context) {
+
 	id := context.Param("id")
 
 	var hotel, err = GetHotelById(id)
@@ -100,62 +109,122 @@ func getReservationById(context *gin.Context) {
 func postReservations(context *gin.Context) {
 
 	var newReservation Reservation
-	var err error
 
-	if err = context.BindJSON(&newReservation); err != nil {
+	if err := context.BindJSON(&newReservation); err != nil {
+
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
-	newReservation, err = CreateReservation(newReservation)
+	context.IndentedJSON(http.StatusCreated, newReservation)
+
+	// Insertar la reserva en la tabla "Occupancy"
+
+	err := InsertReservationIntoOccupancy(int(newReservation.ID), int(newReservation.IdHotel), newReservation.CheckIn, newReservation.CheckOut)
+
+	if err != nil {
+
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Devolver la nueva reserva en la respuesta
 
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
-//confirma la reserva
+func postUser(context *gin.Context) {
 
-func confirmReservation(reservation *Reservation) {
+	var newUser User
 
-	reservation.IsConfirmed = true
+	if err := context.BindJSON(&newUser); err != nil {
+
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	createdUser, err := CreateUser(newUser)
+
+	if err != nil {
+
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		return
+	}
+
+	context.JSON(http.StatusCreated, createdUser)
 }
 
 //-----------------------------------LOGIN-------------------------------------------
-/*
+
 // loginHandler gestiona las solicitudes de inicio de sesión y autentica al usuario.
 
 func loginHandler(context *gin.Context) {
 
-    var user User
-    // leer credenciales del formulario
+	var user User
+	// leer credenciales del formulario
 
-    if err := context.ShouldBind(&user); err != nil {
+	if err := context.ShouldBind(&user); err != nil {
 
-        context.JSON(http.StatusBadRequest, gin.H{"error": "Credenciales inválidas"})
-        return
-    }
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Credenciales inválidas"})
+		return
+	}
 
-    // validar credenciales
+	// validar credenciales
 
-    if !Authenticate(user.Email, user.Password) {
+	var userFound, err = Authenticate(user.EMail, user.Password)
+	if userFound == nil {
 
-        context.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales incorrectas"})
-        return
-    }
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales incorrectas"})
+		return
+	}
 
-    // inicio de sesión correcto, establecer cookie de sesión
+	// inicio de sesión correcto, establecer cookie de sesión
+	//--------------------------------------------------------------------------------------------------------------
+	sessionToken, err := GenerateSessionToken()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error al generar el token de sesión"})
+		return
+	}
 
-//------------------IRIA EN EL MODEL??-----------------------
+	cookie := &http.Cookie{
+		Name:     "session_token",
+		Value:    sessionToken,
+		HttpOnly: true,
+		MaxAge:   3600,
+		Path:     "/",
+	}
+	http.SetCookie(context.Writer, cookie)
 
-    sessionToken := GenerateSessionToken()
+	context.JSON(http.StatusOK, gin.H{"message": "Inicio de sesión exitoso"})
 
-    cookie := &http.Cookie{
-        Name:     "session_token",
-        Value:    sessionToken,
-        HttpOnly: true,
-        MaxAge:   3600,
-        Path:     "/",
-    }
-    http.SetCookie(context.Writer, cookie)
-
-    context.JSON(http.StatusOK, gin.H{"message": "Inicio de sesión exitoso"})
 }
-*/
+
+func getReservationByHotelId(context *gin.Context) {
+
+	var reservation Reservation
+	var err error
+	id := context.Param("id")
+
+	reservation, err = GetReservationById(id)
+	if err != nil {
+
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, reservation)
+}
+
+func getReservationByEmail(context *gin.Context) {
+	email := context.Param("email")
+
+	var reservation, err = GetReservationByEmail(email)
+	if err != nil {
+
+		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, reservation)
+}
