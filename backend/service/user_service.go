@@ -50,8 +50,9 @@ func CreateUser(user User) (User, error) {
 	return user, nil
 }
 
-func Authenticate(email string, password string) (User, error) {
-	var user User
+func Authenticate(email string, password string) (*User, error) {
+
+	var user *User
 	var err error
 	var db *sql.DB
 
@@ -59,7 +60,7 @@ func Authenticate(email string, password string) (User, error) {
 
 	if err != nil {
 
-		return user, fmt.Errorf("Error al conectar a la base de datos: %v", err)
+		return nil, fmt.Errorf("Error al conectar a la base de datos: %v", err)
 	}
 	defer db.Close()
 
@@ -67,7 +68,7 @@ func Authenticate(email string, password string) (User, error) {
 
 	if err != nil {
 
-		return user, fmt.Errorf("Error al obtener el usuario de la base de datos: %v", err)
+		return nil, fmt.Errorf("Error al obtener el usuario de la base de datos: %v", err)
 	}
 	defer rows.Close()
 
@@ -77,19 +78,19 @@ func Authenticate(email string, password string) (User, error) {
 
 		if err != nil {
 
-			return user, fmt.Errorf("Error al escanear la contraseña del usuario: %v", err)
+			return nil, fmt.Errorf("Error al escanear la contraseña del usuario: %v", err)
 
 		}
 	} else {
 
-		return user, fmt.Errorf("Usuario no encontrado")
+		return nil, fmt.Errorf("Usuario no encontrado")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
 
-		return user, fmt.Errorf("Credenciales incorrectas")
+		return nil, fmt.Errorf("Credenciales incorrectas")
 	}
 
 	return user, nil

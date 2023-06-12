@@ -21,15 +21,13 @@ func main() {
 	router.GET("/reservations", getReservations)
 	router.GET("/reservations/:id", getReservationById)
 	router.POST("/reservations", postReservations)
+	router.POST("/users", postUser)
 	router.Run("localhost:8080")
-
-	//-----------------LOGIN------------------------
-	/*
-		router.POST("/login", loginHandler)
-	*/
+	router.POST("/login", loginHandler)
 }
 
-// ---------------------------------------ver si funciona bien------------------------------------------------------
+// insertar nuevos hoteles
+
 func postHotels(context *gin.Context) {
 	var newHotel Hotel
 
@@ -39,7 +37,7 @@ func postHotels(context *gin.Context) {
 		return
 	}
 
-	createdHotel, err := CreateHotel(&newHotel)
+	createdHotel, err := CreateHotel(newHotel)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create hotel"})
 		return
@@ -48,7 +46,6 @@ func postHotels(context *gin.Context) {
 	context.JSON(http.StatusCreated, createdHotel)
 }
 
-// ---------------------------------------------------------------------------------------------
 func getHotels(context *gin.Context) {
 	var hotels, err = GetHotels()
 	if err != nil {
@@ -100,14 +97,11 @@ func getReservationById(context *gin.Context) {
 func postReservations(context *gin.Context) {
 
 	var newReservation Reservation
-	var err error
-
-	if err = context.BindJSON(&newReservation); err != nil {
+	if err := context.BindJSON(&newReservation); err != nil {
 		return
 	}
 
-	newReservation, err = CreateReservation(newReservation)
-
+	//reservations = append(reservations, newReservation)
 	context.IndentedJSON(http.StatusCreated, newReservation)
 }
 
@@ -118,44 +112,64 @@ func confirmReservation(reservation *Reservation) {
 	reservation.IsConfirmed = true
 }
 
+func postUser(context *gin.Context) {
+	var newUser User
+
+	if err := context.BindJSON(&newUser); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	createdUser, err := CreateUser(newUser)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		return
+	}
+
+	context.JSON(http.StatusCreated, createdUser)
+}
+
 //-----------------------------------LOGIN-------------------------------------------
-/*
+
 // loginHandler gestiona las solicitudes de inicio de sesión y autentica al usuario.
 
 func loginHandler(context *gin.Context) {
 
-    var user User
-    // leer credenciales del formulario
+	var user User
+	// leer credenciales del formulario
 
-    if err := context.ShouldBind(&user); err != nil {
+	if err := context.ShouldBind(&user); err != nil {
 
-        context.JSON(http.StatusBadRequest, gin.H{"error": "Credenciales inválidas"})
-        return
-    }
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Credenciales inválidas"})
+		return
+	}
 
-    // validar credenciales
+	// validar credenciales
 
-    if !Authenticate(user.Email, user.Password) {
+	var userFound, err = Authenticate(user.EMail, user.Password)
+	if userFound == nil {
 
-        context.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales incorrectas"})
-        return
-    }
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales incorrectas"})
+		return
+	}
 
-    // inicio de sesión correcto, establecer cookie de sesión
+	// inicio de sesión correcto, establecer cookie de sesión
+	//--------------------------------------------------------------------------------------------------------------
+	sessionToken, err := GenerateSessionToken()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error al generar el token de sesión"})
+		return
+	}
 
-//------------------IRIA EN EL MODEL??-----------------------
+	cookie := &http.Cookie{
+		Name:     "session_token",
+		Value:    sessionToken,
+		HttpOnly: true,
+		MaxAge:   3600,
+		Path:     "/",
+	}
+	http.SetCookie(context.Writer, cookie)
 
-    sessionToken := GenerateSessionToken()
+	context.JSON(http.StatusOK, gin.H{"message": "Inicio de sesión exitoso"})
 
-    cookie := &http.Cookie{
-        Name:     "session_token",
-        Value:    sessionToken,
-        HttpOnly: true,
-        MaxAge:   3600,
-        Path:     "/",
-    }
-    http.SetCookie(context.Writer, cookie)
-
-    context.JSON(http.StatusOK, gin.H{"message": "Inicio de sesión exitoso"})
 }
-*/
