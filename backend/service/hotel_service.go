@@ -6,7 +6,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 )
 
 func GetHotels() ([]Hotel, error) {
@@ -102,21 +101,19 @@ func CreateHotel(hotel Hotel) (Hotel, error) {
 
 		context.Background(),
 
-		"INSERT INTO hotels (id, name, description, price, rooms) VALUES (?, ?, ?, ?, ?)",
-		hotel.ID, hotel.Name, hotel.Description, hotel.Price, hotel.Rooms)
+		"INSERT INTO hotels (name, description, price, rooms) VALUES (?, ?, ?, ?)",
+		hotel.Name, hotel.Description, hotel.Price, hotel.Rooms)
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("impossible insert hotel: %s", err)
 	}
 	id, err := insertResult.LastInsertId()
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("impossible to retrieve last inserted id: %s", err)
 	}
 
-	log.Printf("inserted id: %d", id)
+	hotel.ID = id
 
 	return hotel, nil
 }

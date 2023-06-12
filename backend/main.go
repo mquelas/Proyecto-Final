@@ -110,6 +110,16 @@ func getReservationById(context *gin.Context) {
 	context.JSON(http.StatusOK, reservation)
 }
 
+/*
+Frontend tiene que pasar un JSON como este:
+
+	{
+	    "checkin": "2023-01-01T15:04:05Z",
+	    "checkout": "2023-01-04T15:04:05Z",
+	    "idHotel": 1,
+	    "email": "prueba@gmail.com"
+	}
+*/
 func postReservations(context *gin.Context) {
 	var newReservation Reservation
 

@@ -112,8 +112,8 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 
 	insertResult, err := db.ExecContext(
 		context.Background(),
-		"INSERT INTO reservation (id_reservation, checkin, checkout, id_hotel, Email) VALUES (?, ?, ?, ?, ?)",
-		reservation.ID, reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.EMail,
+		"INSERT INTO reservation (checkin, checkout, id_hotel, Email) VALUES (?, ?, ?, ?)",
+		reservation.CheckIn, reservation.CheckOut, reservation.IdHotel, reservation.EMail,
 	)
 
 	if err != nil {
