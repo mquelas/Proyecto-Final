@@ -79,7 +79,6 @@ func GetHotelById(id string) (Hotel, error) {
 	return hotel, nil
 }
 func CreateHotel(hotel Hotel) (Hotel, error) {
-
 	var err error
 	var db *sql.DB
 
@@ -98,13 +97,11 @@ func CreateHotel(hotel Hotel) (Hotel, error) {
 		hotel.ID, hotel.Name, hotel.Description, hotel.Price, hotel.Rooms)
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("impossible insert hotel: %s", err)
 	}
 	id, err := insertResult.LastInsertId()
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("impossible to retrieve last inserted id: %s", err)
 	}
 

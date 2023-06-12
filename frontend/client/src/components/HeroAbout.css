@@ -1,0 +1,34 @@
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+  }
+  
+.hero__titleAbout {
+    bottom: 75%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    color: white;
+    font-size: 4rem;
+    padding: 15px;
+    font-family: "MonteCarlo", cursive;
+  }
+
+  .descripcion {
+    position: absolute;
+    bottom: 50%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    color: white;
+    font-size: 2rem;
+    padding: 15px;
+    font-family: "MonteCarlo", cursive;
+  }
