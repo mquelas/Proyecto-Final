@@ -7,10 +7,11 @@ export default function About(){
 
     const navbarLinks = [
 
-        { url: "/", title: "Home" },
-        { url: "/about", title: "Sobre nosotros" },
-        { url: "/reservas", title: "Reservar" },
-        { url: "/login", title: "Login" },
+      { url: "/", title: "Home" },
+      { url: "/about", title: "Sobre nosotros" },
+      { url: "/reservas", title: "Reservar" },
+      { url: "/misreservas", title: "Mis Reservas" },
+      { url: "/login", title: "Login" },
       ];
 
     return <div className="About">

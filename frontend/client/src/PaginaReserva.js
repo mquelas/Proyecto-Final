@@ -17,7 +17,9 @@ export default function PaginaReserva() {
     { url: "/", title: "Home" },
     { url: "/about", title: "Sobre nosotros" },
     { url: "/reservas", title: "Reservar" },
+    { url: "/misreservas", title: "Mis Reservas" },
     { url: "/login", title: "Login" },
+
   ];
 
   const navigate = useNavigate();

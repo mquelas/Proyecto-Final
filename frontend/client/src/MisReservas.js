@@ -1,8 +1,13 @@
+import React from "react"
+import { useNavigate } from "react-router"
 import Navbar from "./components/Navbar";
 import "./DatePicker.css";
-export default function PaginaConfirmacion(){
-    
-    
+
+
+export default function MisReservas(){
+
+
+    const navigate = useNavigate();
     const navbarLinks = [
 
         { url: "/", title: "Home" },
@@ -11,17 +16,16 @@ export default function PaginaConfirmacion(){
     { url: "/misreservas", title: "Mis Reservas" },
     { url: "/login", title: "Login" },
       ];
-      
-    return (<div className="paginaConfirmacion">
+
+    return (<div className="misReservas">
 
         <Navbar navbarLinks={navbarLinks} />
-         
-         
-         
-         
-         
-         
-        <div className="hotel-container"><h1>Se ha registrado su reserva en el Hotel (id hotel) !!!</h1></div>
+
+            <div className="date-container">
+
+                <h1>Reservas</h1>
+                <input type="text" placeholder="tuReserva"></input>
+            </div>
 
     </div>
     )

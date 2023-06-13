@@ -13,9 +13,10 @@ export default function PaginaLogin(){
     const navbarLinks = [
 
         { url: "/", title: "Home" },
-        { url: "/about", title: "Sobre nosotros" },
-        { url: "/reservas", title: "Reservar" },
-        { url: "/login", title: "Login" },
+    { url: "/about", title: "Sobre nosotros" },
+    { url: "/reservas", title: "Reservar" },
+    { url: "/misreservas", title: "Mis Reservas" },
+    { url: "/login", title: "Login" },
       ];
 
       
