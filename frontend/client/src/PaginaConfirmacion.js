@@ -20,7 +20,7 @@ export default function PaginaConfirmacion(){
          
          
          
-        <div className="date-container"><h1>Se ha registrado su reserva en el Hotel (id hotel) !!!</h1></div>
+        <div className="hotel-container"><h1>Se ha registrado su reserva en el Hotel (id hotel) !!!</h1></div>
 
     </div>
     )

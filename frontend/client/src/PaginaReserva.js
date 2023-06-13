@@ -9,7 +9,6 @@ import Hotel1 from "./assets/Hotel 1.jpg";
 import "./components/Hero";
 import "./DatePicker.css";
 import "./components/HeroAbout.css";
-import "./components/Buttom.css";
 import { useState } from "react";
 import { useNavigate } from "react-router"
 
@@ -32,19 +31,19 @@ export default function PaginaReserva() {
         <button>Enviar</button>
       </div>
       
-      <div  className="date-hotel">
+      <div  className="Buttom-container">
         <Slider imageSrc={Hotel1} title={"Hotel 1"} />
         <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
       </div>
-      <div className="date-hotel">
+      <div className="Buttom-container">
         <Slider imageSrc={Hotel2} title={"Hotel 2"} />
         <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
       </div>
-      <div className="date-hotel">
+      <div className="Buttom-container">
         <Slider imageSrc={Hotel3} title={"Hotel 3"} />
         <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
       </div>
-      <div className="date-hotel">
+      <div className="Buttom-container">
         <Slider imageSrc={Hotel4} title={"Hotel 4"} />
         <button onClick={()=> navigate("/confirmacion")}>Reservar</button>
       </div>
