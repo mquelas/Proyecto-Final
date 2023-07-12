@@ -88,6 +88,7 @@ func GetReservationById(id int64) (Reservation, error) {
 }
 
 func CreateReservation(reservation Reservation) (*Reservation, error) {
+
 	if !validateAvailability(reservation) {
 		return nil, fmt.Errorf("No hay disponibilidad")
 	}
@@ -117,6 +118,11 @@ func CreateReservation(reservation Reservation) (*Reservation, error) {
 	}
 
 	var newReservation *Reservation = &reservation
+
+	if newReservation == nil {
+
+		return nil, fmt.Errorf("La reservacion es nula %q", err)
+	}
 	newReservation.ID = id
 
 	diffDates := reservation.CheckOut.Sub(reservation.CheckIn).Hours() / 24
