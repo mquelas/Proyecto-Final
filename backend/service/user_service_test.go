@@ -1,11 +1,9 @@
 package service
 
 import (
-	"fmt"
 	"testing"
 
-	//"context"
-	"database/sql"
+	. "backend/model"
 )
 
 func TestUserExists_Exists(t *testing.T) {
@@ -51,7 +49,7 @@ func TestUserExists_Empty(t *testing.T) {
 
 func TestCreateUser_Success(t *testing.T) {
 
-	user := User{
+	var user = User{
 		EMail:    "peueba@example.com",
 		Name:     "pepe",
 		LastName: "gomez",
@@ -74,19 +72,31 @@ func TestCreateUser_Success(t *testing.T) {
 	}
 }
 
-func TestCreateUser_Failure(t *testing.T) {
-
+func TestCreateUser_FailureNoEmail(t *testing.T) {
 	user := User{
-		EMail:    "test@example.com",
+		EMail:    "",
 		Name:     "John",
 		LastName: "Doe",
 		Password: "password123",
 		Admin:    false,
 	}
 
-	DataConnect = func() (*sql.DB, error) {
-		return nil, fmt.Errorf("Error en la conexión a la base de datos")
+	_, err := CreateUser(user)
+
+	if err == nil {
+		t.Fatalf("CreateUser no falla cuando hay un error en la conexión a la base de datos")
 	}
+}
+
+func TestCreateUser_FailureUserExists(t *testing.T) {
+	user := User{
+		EMail:    "pepcito@gmail.com",
+		Name:     "John",
+		LastName: "Doe",
+		Password: "password123",
+		Admin:    false,
+	}
+
 	_, err := CreateUser(user)
 
 	if err == nil {
