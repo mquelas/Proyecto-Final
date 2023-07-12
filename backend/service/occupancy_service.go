@@ -18,9 +18,19 @@ func GetOccupancyByDate(idHotel int64, dateFrom time.Time, dateTo time.Time) (in
 
 	defer db.Close()
 
-	rows, err := db.Query(
-		"SELECT count(1) FROM occupancy O join reservation R on (O.id_reservation = R.id_reservation) "+
-			"WHERE R.id_hotel = ? and O.date >= ? and O.date <= ?",
+	rows, err := db.Query("select count(1) from ( "+
+		"SELECT "+
+		"distinct(O.id_reservation) "+
+		"FROM "+
+		"occupancy O "+
+		"JOIN "+
+		"reservation R ON (O.id_reservation = R.id_reservation) "+
+		"WHERE "+
+		"R.id_hotel = ? "+
+		"AND O.date >= ? "+
+		"AND O.date <= ? "+
+		"group by id_reservation) T ",
+
 		idHotel, dateFrom, dateTo)
 
 	if err != nil {

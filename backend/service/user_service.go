@@ -6,12 +6,43 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
+
+func UserExists(email string) (bool, error) {
+
+	var err error
+	var db *sql.DB
+
+	db, err = DataConnect()
+
+	if err != nil {
+
+		return false, fmt.Errorf("Error al conectar a la base de datos: %v", err)
+	}
+
+	defer db.Close()
+
+	row := db.QueryRow("SELECT count(1) FROM user WHERE email = ? ", email)
+
+	var foundUsers int64
+	if err = row.Scan(&foundUsers); err != nil {
+
+		if err == sql.ErrNoRows {
+
+			return false, fmt.Errorf("Usuario no encontrado")
+		}
+		return false, fmt.Errorf("Error al obtener el usuario de la base de datos: %v", err)
+	}
+	if foundUsers == 0 {
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
 
 func CreateUser(user User) (User, error) {
 
@@ -33,23 +64,9 @@ func CreateUser(user User) (User, error) {
 		"INSERT INTO user (email, name, lastname, password, admin) VALUES (?, ?, ?, ?, ?)",
 		user.EMail, user.Name, user.LastName, user.Password, user.Admin,
 	)
+	_ = insertResult
 
 	if err != nil {
-
-		log.Fatalf("impossible insert user: %s", err)
-	}
-
-	id, err := insertResult.LastInsertId()
-
-	if err != nil {
-
-		log.Fatalf("impossible to retrieve last inserted id: %s", err)
-	}
-
-	log.Printf("inserted id: %d", id)
-
-	if err != nil {
-
 		return user, fmt.Errorf("createUser %q", err)
 	}
 
@@ -80,7 +97,7 @@ func Authenticate(email string, password string) (*User, error) {
 
 	if rows.Next() {
 
-		err = rows.Scan(&user.Password)
+		err = rows.Scan(&user)
 
 		if err != nil {
 

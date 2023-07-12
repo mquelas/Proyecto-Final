@@ -35,7 +35,6 @@ func postHotels(context *gin.Context) {
 	err := context.BindJSON(&newHotel)
 
 	if err != nil {
-
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
@@ -43,7 +42,6 @@ func postHotels(context *gin.Context) {
 	createdHotel, err := CreateHotel(newHotel)
 
 	if err != nil {
-
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -121,11 +119,23 @@ Frontend tiene que pasar un JSON como este:
 	}
 */
 func postReservations(context *gin.Context) {
+
 	var newReservation Reservation
 
 	if err := context.BindJSON(&newReservation); err != nil {
+
 		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
+		return
+	}
+
+	var userExists, err = UserExists(newReservation.EMail)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo validar el usuario"})
+		return
+	}
+	if !userExists {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "El usuario no existe"})
 		return
 	}
 
@@ -151,15 +161,24 @@ func postUser(context *gin.Context) {
 		return
 	}
 
-	createdUser, err := CreateUser(newUser)
-
+	var userExists, err = UserExists(newUser.EMail)
 	if err != nil {
-
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo validar el usuario"})
 		return
 	}
+	if !userExists {
+		createdUser, err := CreateUser(newUser)
 
-	context.JSON(http.StatusCreated, createdUser)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear el usuario"})
+			return
+		}
+
+		context.JSON(http.StatusCreated, createdUser)
+	} else {
+		context.JSON(http.StatusConflict, "El usuario ya existe")
+	}
+
 }
 
 //-----------------------------------LOGIN-------------------------------------------

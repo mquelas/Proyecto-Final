@@ -56,7 +56,6 @@ func GetHotelById(id int64) (Hotel, error) {
 	db, err = DataConnect()
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("getHotelById %q", err)
 	}
 	defer db.Close()
@@ -64,21 +63,17 @@ func GetHotelById(id int64) (Hotel, error) {
 	rows, err := db.Query("SELECT * FROM hotel WHERE id_hotel = ?", id)
 
 	if err != nil {
-
 		return hotel, fmt.Errorf("getHotelById %q", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-
 		if err := rows.Scan(&hotel.ID, &hotel.Name, &hotel.Description, &hotel.Price, &hotel.Rooms); err != nil {
-
 			return hotel, fmt.Errorf("getHotelById %q", err)
 		}
 	}
 
 	if err := rows.Err(); err != nil {
-
 		return hotel, fmt.Errorf("getHotelById %q", err)
 	}
 

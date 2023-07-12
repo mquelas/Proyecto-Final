@@ -11,7 +11,7 @@ func DataConnect() (*sql.DB, error) {
 	// conectarse a la DB
 	var db *sql.DB
 	var err error
-	db, err = sql.Open("mysql", "arqsw:arqsw@tcp(127.0.0.1:3306)/arqsw")
+	db, err = sql.Open("mysql", "admin:luli@tcp(127.0.0.1:3306)/arqsw?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
