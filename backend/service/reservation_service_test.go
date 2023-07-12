@@ -41,7 +41,7 @@ func TestGetReservationById_Failure(t *testing.T) {
 	if err == nil {
 		t.Fatalf("GetReservationById no falla cuando hay un error en la ejecución de la consulta")
 	}
-	if reservation != (Reservation{}) {
+	if reservation != nil && reservation.ID != 0 {
 		t.Fatalf("GetReservationById devuelve una Reservation que no deberia devolver")
 	}
 }

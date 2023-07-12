@@ -71,8 +71,9 @@ func GetReservationById(id int64) (*Reservation, error) {
 
 	defer rows.Close()
 
+	var reser Reservation
+
 	for rows.Next() {
-		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
 			return nil, fmt.Errorf("getReservationById %q", err)
@@ -81,9 +82,11 @@ func GetReservationById(id int64) (*Reservation, error) {
 		reservation = reser
 	}
 
-	if err := rows.Err(); err != nil || &reservation == nil {
-
+	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("getReservationById %q", err)
+	}
+	if reser.ID == int64(0) {
+		return nil, fmt.Errorf("reservation no existe")
 	}
 
 	return &reservation, nil
