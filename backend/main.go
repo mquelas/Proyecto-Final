@@ -95,11 +95,11 @@ func getReservationById(context *gin.Context) {
 		return
 	}
 
-	var reservation Reservation
+	var reservation *Reservation
 	var err error
 
 	reservation, err = GetReservationById(id)
-	if err != nil {
+	if err != nil || reservation == nil {
 
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -108,16 +108,6 @@ func getReservationById(context *gin.Context) {
 	context.JSON(http.StatusOK, reservation)
 }
 
-/*
-Frontend tiene que pasar un JSON como este:
-
-	{
-	    "checkin": "2023-01-01T15:04:05Z",
-	    "checkout": "2023-01-04T15:04:05Z",
-	    "idHotel": 1,
-	    "email": "prueba@gmail.com"
-	}
-*/
 func postReservations(context *gin.Context) {
 
 	var newReservation Reservation

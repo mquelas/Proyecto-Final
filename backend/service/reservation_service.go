@@ -49,7 +49,8 @@ func GetReservations() ([]Reservation, error) {
 	return reservations, nil
 }
 
-func GetReservationById(id int64) (Reservation, error) {
+func GetReservationById(id int64) (*Reservation, error) {
+
 	var reservation Reservation
 	var err error
 	var db *sql.DB
@@ -57,7 +58,7 @@ func GetReservationById(id int64) (Reservation, error) {
 	db, err = DataConnect()
 
 	if err != nil {
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
 	defer db.Close()
@@ -65,7 +66,7 @@ func GetReservationById(id int64) (Reservation, error) {
 	rows, err := db.Query("SELECT * FROM reservation WHERE Id_reservation = ?", id)
 
 	if err != nil {
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
 	defer rows.Close()
@@ -74,17 +75,17 @@ func GetReservationById(id int64) (Reservation, error) {
 		var reser Reservation
 
 		if err := rows.Scan(&reser.ID, &reser.CheckIn, &reser.CheckOut, &reser.IdHotel, &reser.EMail); err != nil {
-			return reservation, fmt.Errorf("getReservationById %q", err)
+			return nil, fmt.Errorf("getReservationById %q", err)
 		}
 
 		reservation = reser
 	}
 
 	if err := rows.Err(); err != nil {
-		return reservation, fmt.Errorf("getReservationById %q", err)
+		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
-	return reservation, nil
+	return &reservation, nil
 }
 
 func CreateReservation(reservation Reservation) (*Reservation, error) {
