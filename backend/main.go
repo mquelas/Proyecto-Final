@@ -99,9 +99,12 @@ func getReservationById(context *gin.Context) {
 	var err error
 
 	reservation, err = GetReservationById(id)
-	if err != nil || reservation == nil {
-
+	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	if reservation.ID == 0 {
+		context.JSON(http.StatusNotFound, gin.H{"error": "Reservation no encontrada"})
 		return
 	}
 

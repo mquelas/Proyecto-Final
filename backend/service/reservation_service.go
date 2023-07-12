@@ -81,7 +81,8 @@ func GetReservationById(id int64) (*Reservation, error) {
 		reservation = reser
 	}
 
-	if err := rows.Err(); err != nil {
+	if err := rows.Err(); err != nil || &reservation == nil {
+
 		return nil, fmt.Errorf("getReservationById %q", err)
 	}
 
