@@ -68,6 +68,7 @@ func TestCreateReservation_Success(t *testing.T) {
 
 func TestCreateReservation_AvailabilityError(t *testing.T) {
 
+	//TODO ojo que para que funcione el test hay que tener datos en la db cargados
 	reservation := Reservation{
 		CheckIn:  time.Now().AddDate(0, 0, 1),
 		CheckOut: time.Now().AddDate(0, 0, 3),

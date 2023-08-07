@@ -13,6 +13,9 @@ import (
 )
 
 func UserExists(email string) (bool, error) {
+	if email == "" {
+		return false, fmt.Errorf("El email no puede ser vacio")
+	}
 
 	var err error
 	var db *sql.DB
